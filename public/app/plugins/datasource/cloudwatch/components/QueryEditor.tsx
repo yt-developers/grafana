@@ -80,7 +80,6 @@ export class QueryEditor extends PureComponent<Props, State> {
           <div className="gf-form-inline">
             <div className="gf-form">
               <QueryField
-                className="query-keyword"
                 label="Id"
                 tooltip="Id can include numbers, letters, and underscore, and must start with a lowercase letter."
               >
@@ -115,7 +114,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         )}
         <div className="gf-form-inline">
           <div className="gf-form">
-            <QueryField className="query-keyword" label="Period" tooltip="Minimum interval between points in seconds">
+            <QueryField label="Period" tooltip="Minimum interval between points in seconds">
               <Input
                 className="gf-form-input width-8"
                 value={query.period || ''}
@@ -129,7 +128,6 @@ export class QueryEditor extends PureComponent<Props, State> {
           </div>
           <div className="gf-form">
             <QueryField
-              className="query-keyword"
               label="Alias"
               tooltip="Alias replacement variables: {{metric}}, {{stat}}, {{namespace}}, {{region}}, {{period}}, {{label}}, {{YOUR_DIMENSION_NAME}}"
             >

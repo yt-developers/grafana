@@ -89,7 +89,6 @@ export function registerAngularDirectives() {
   react2AngularDirective('cloudwatchAnnotationQueryEditor', CloudWatchAnnotationQueryEditor, [
     'query',
     'onChange',
-    'onRunQuery',
     ['datasource', { watchDepth: 'reference' }],
   ]);
   react2AngularDirective('secretFormField', SecretFormField, [
