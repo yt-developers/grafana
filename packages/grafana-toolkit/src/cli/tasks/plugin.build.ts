@@ -1,4 +1,3 @@
-import * as prettier from 'prettier';
 import { useSpinner } from '../utils/useSpinner';
 import { testPlugin } from './plugin/tests';
 import { Task, TaskRunner } from './task';
@@ -8,12 +7,10 @@ import { promisify } from 'util';
 import globby from 'globby';
 import execa from 'execa';
 import { constants as fsConstants, promises as fs } from 'fs';
+import { CLIEngine } from 'eslint';
 import { bundlePlugin as bundleFn, PluginBundleOptions } from './plugin/bundle';
 
-// @ts-ignore
-import { Linter, Configuration, RuleFailure } from 'tslint';
-
-const { access, copyFile, readFile, writeFile } = fs;
+const { copyFile, readFile, writeFile } = fs;
 const { COPYFILE_EXCL, F_OK } = fsConstants;
 const rimraf = promisify(rimrafCallback);
 
@@ -56,7 +53,6 @@ export const prepare = useSpinner<void>('Preparing', async () => {
   // Nothing is returned
 });
 
-// @ts-ignore
 const typecheckPlugin = useSpinner<void>('Typechecking', async () => {
   await execa('tsc', ['--noEmit']);
 });
@@ -65,110 +61,37 @@ const getTypescriptSources = () => globby(resolvePath(process.cwd(), 'src/**/*.+
 
 const getStylesSources = () => globby(resolvePath(process.cwd(), 'src/**/*.+(scss|css)'));
 
-export const prettierCheckPlugin = useSpinner<Fixable>('Prettier check', async ({ fix }) => {
-  const [prettierConfig, paths] = await Promise.all([
-    readFile(resolvePath(__dirname, '../../config/prettier.plugin.config.json'), 'utf8').then(
-      contents => JSON.parse(contents) as object
-    ),
-
-    Promise.all([getStylesSources(), getTypescriptSources()]).then(results => results.flat()),
-  ]);
-
-  const promises: Promise<{ path: string; success: boolean }>[] = paths.map(path =>
-    readFile(path, 'utf8')
-      .then(contents => {
-        const config = {
-          ...prettierConfig,
-          filepath: path,
-        };
-
-        if (fix && !prettier.check(contents, config)) {
-          return prettier.format(contents, config);
-        }
-      })
-      .then(newContents => {
-        if (fix && newContents && newContents.length > 10) {
-          return writeFile(path, newContents)
-            .then(() => {
-              console.log(`Fixed: ${path}`);
-              return true;
-            })
-            .catch(error => {
-              console.log(`Error fixing ${path}`, error);
-              return false;
-            });
-        } else if (fix) {
-          console.log(`No automatic fix for: ${path}`);
-          return false;
-        } else {
-          return false;
-        }
-      })
-      .then(success => ({ path, success }))
-  );
-
-  const failures = (await Promise.all(promises)).filter(({ success }) => !success);
-
-  if (failures.length > 0) {
-    console.log('\nFix Prettier issues in following files:');
-    failures.forEach(({ path }) => console.log(path));
-    console.log('\nRun toolkit:dev to fix errors');
-    throw new Error('Prettier failed');
-  }
-});
-
-// @ts-ignore
 export const lintPlugin = useSpinner<Fixable>('Linting', async ({ fix }) => {
-  let tsLintConfigPath = resolvePath(process.cwd(), 'tslint.json');
-
-  try {
-    await access(tsLintConfigPath, F_OK);
-  } catch (error) {
-    tsLintConfigPath = resolvePath(__dirname, '../../config/tslint.plugin.json');
-  }
-
-  const options = {
-    fix: fix === true,
-    formatter: 'json',
-  };
-
-  const configuration = Configuration.findConfiguration(tsLintConfigPath).results;
-  const sourcesToLint = await getTypescriptSources();
-
-  const lintPromises = sourcesToLint.map(fileName =>
-    readFile(fileName, 'utf8').then(contents => {
-      const linter = new Linter(options);
-      linter.lint(fileName, contents, configuration);
-      return linter.getResult();
-    })
+  // @todo should remove this because the config file could be in a parent dir or within package.json
+  const configFile = await globby(resolvePath(process.cwd(), '.eslintrc?(.cjs|.js|.json|.yaml|.yml)')).then(
+    filePaths => {
+      if (filePaths.length > 0) {
+        return filePaths[0];
+      } else {
+        return resolvePath(__dirname, '../../config/eslint.plugin.json');
+      }
+    }
   );
 
-  const lintResults = (await Promise.all(lintPromises)).filter(
-    ({ errorCount, warningCount }) => errorCount > 0 || warningCount > 0
-  );
+  const cli = new CLIEngine({
+    configFile,
+    fix,
+  });
 
-  if (lintResults.length > 0) {
+  const { errorCount, results, warningCount } = cli.executeOnFiles(await getTypescriptSources());
+
+  if (errorCount > 0 || warningCount > 0) {
+    const formatter = cli.getFormatter();
     console.log('\n');
-    const failures = lintResults.flat();
-    failures.forEach(f => {
-      // tslint:disable-next-line
-      console.log(
-        `${f.getRuleSeverity() === 'warning' ? 'WARNING' : 'ERROR'}: ${
-          f.getFileName().split('src')[1]
-        }[${f.getStartPosition().getLineAndCharacter().line + 1}:${
-          f.getStartPosition().getLineAndCharacter().character
-        }]: ${f.getFailure()}`
-      );
-    });
+    console.log(formatter(results));
     console.log('\n');
-    throw new Error(`${failures.length} linting errors found in ${lintResults.length} files`);
+    throw new Error(`${errorCount + warningCount} linting errors found in ${results.length} files`);
   }
 });
 
 export const pluginBuildRunner: TaskRunner<PluginBuildOptions> = async ({ coverage }) => {
   await clean();
   await prepare();
-  await prettierCheckPlugin({ fix: false });
   await lintPlugin({ fix: false });
   await testPlugin({ updateSnapshot: false, coverage, watch: false });
   await bundlePlugin({ watch: false, production: true });
