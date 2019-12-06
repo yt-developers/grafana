@@ -1,18 +1,17 @@
+import * as prettier from 'prettier';
+import { useSpinner } from '../utils/useSpinner';
+import { testPlugin } from './plugin/tests';
 import { Task, TaskRunner } from './task';
 import rimrafCallback from 'rimraf';
 import { resolve as resolvePath } from 'path';
 import { promisify } from 'util';
 import globby from 'globby';
+import execa from 'execa';
 import { constants as fsConstants, promises as fs } from 'fs';
+import { bundlePlugin as bundleFn, PluginBundleOptions } from './plugin/bundle';
 
 // @ts-ignore
-import execa = require('execa');
 import { Linter, Configuration, RuleFailure } from 'tslint';
-import * as prettier from 'prettier';
-
-import { useSpinner } from '../utils/useSpinner';
-import { testPlugin } from './plugin/tests';
-import { bundlePlugin as bundleFn, PluginBundleOptions } from './plugin/bundle';
 
 const { access, copyFile, readFile, writeFile } = fs;
 const { COPYFILE_EXCL, F_OK } = fsConstants;
@@ -150,9 +149,7 @@ export const lintPlugin = useSpinner<Fixable>('Linting', async ({ fix }) => {
 
   if (lintResults.length > 0) {
     console.log('\n');
-    const failures = lintResults.reduce<RuleFailure[]>((failures, result) => {
-      return [...failures, ...result.failures];
-    }, []);
+    const failures = lintResults.flat();
     failures.forEach(f => {
       // tslint:disable-next-line
       console.log(
