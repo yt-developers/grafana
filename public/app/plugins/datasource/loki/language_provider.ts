@@ -13,7 +13,6 @@ import { RATE_RANGES } from '../prometheus/promql';
 
 import LokiDatasource from './datasource';
 import { CompletionItem, TypeaheadInput, TypeaheadOutput } from '@grafana/ui';
-import { ExploreMode } from 'app/types/explore';
 
 const DEFAULT_KEYS = ['job', 'namespace'];
 const EMPTY_SELECTOR = '{}';
@@ -145,7 +144,7 @@ export default class LokiLanguageProvider extends LanguageProvider {
       // Suggestions for {|} and {foo=|}
       return await this.getLabelCompletionItems(input, context);
     } else if (empty) {
-      return this.getEmptyCompletionItems(context || {}, ExploreMode.Metrics);
+      return this.getEmptyCompletionItems(context || {});
     } else if ((prefixUnrecognized && noSuffix) || safeEmptyPrefix || isNextOperand) {
       // Show term suggestions in a couple of scenarios
       return this.getTermCompletionItems();
@@ -156,7 +155,7 @@ export default class LokiLanguageProvider extends LanguageProvider {
     };
   }
 
-  getEmptyCompletionItems(context: TypeaheadContext, mode?: ExploreMode): TypeaheadOutput {
+  getEmptyCompletionItems(context: TypeaheadContext): TypeaheadOutput {
     const { history } = context;
     const suggestions = [];
 
@@ -178,10 +177,8 @@ export default class LokiLanguageProvider extends LanguageProvider {
       });
     }
 
-    if (mode === ExploreMode.Metrics) {
-      const termCompletionItems = this.getTermCompletionItems();
-      suggestions.push(...termCompletionItems.suggestions);
-    }
+    const termCompletionItems = this.getTermCompletionItems();
+    suggestions.push(...termCompletionItems.suggestions);
 
     return { suggestions };
   }

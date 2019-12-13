@@ -63,7 +63,7 @@ import { reducerFactory, ActionOf } from 'app/core/redux';
 import { updateLocation } from 'app/core/actions/location';
 import { LocationUpdate } from '@grafana/runtime';
 import TableModel from 'app/core/table_model';
-import { ResultProcessor } from '../utils/ResultProcessor';
+import { ResultProcessor, isTimeSeries } from '../utils/ResultProcessor';
 
 export const DEFAULT_RANGE = {
   from: 'now-6h',
@@ -572,9 +572,17 @@ export const processQueryResponse = (
 
   const latency = request.endTime ? request.endTime - request.startTime : 0;
   const processor = new ResultProcessor(state, series, request.intervalMs, request.timezone as TimeZone);
-  const graphResult = processor.getGraphResult();
-  const tableResult = processor.getTableResult();
-  const logsResult = processor.getLogsResult();
+  const hasTimeSeries = series.filter(isTimeSeries).length;
+  let graphResult = null;
+  let tableResult = null;
+  let logsResult = null;
+
+  if (hasTimeSeries) {
+    graphResult = processor.getGraphResult();
+    tableResult = processor.getTableResult();
+  } else {
+    logsResult = processor.getLogsResult();
+  }
 
   // Send legacy data to Angular editors
   if (state.datasourceInstance.components.QueryCtrl) {

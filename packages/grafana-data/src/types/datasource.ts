@@ -106,6 +106,7 @@ export interface DataSourcePluginMeta extends PluginMeta {
   builtIn?: boolean; // Is this for all
   metrics?: boolean;
   logs?: boolean;
+  unified?: boolean;
   annotations?: boolean;
   alerting?: boolean;
   mixed?: boolean;
