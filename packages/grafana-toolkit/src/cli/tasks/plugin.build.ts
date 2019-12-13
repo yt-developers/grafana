@@ -1,5 +1,7 @@
 import { Task, TaskRunner } from './task';
+import rimrafCallback from 'rimraf';
 import { resolve as resolvePath } from 'path';
+import { promisify } from 'util';
 import globby from 'globby';
 import { constants as fsConstants, promises as fs } from 'fs';
 
@@ -14,6 +16,7 @@ import { bundlePlugin as bundleFn, PluginBundleOptions } from './plugin/bundle';
 
 const { access, copyFile, readFile, writeFile } = fs;
 const { COPYFILE_EXCL, F_OK } = fsConstants;
+const rimraf = promisify(rimrafCallback);
 
 interface PluginBuildOptions {
   coverage: boolean;
@@ -26,7 +29,7 @@ interface Fixable {
 export const bundlePlugin = useSpinner<PluginBundleOptions>('Compiling...', async options => await bundleFn(options));
 
 // @ts-ignore
-export const clean = useSpinner<void>('Cleaning', async () => await execa('rimraf', [`${process.cwd()}/dist`]));
+export const clean = useSpinner<void>('Cleaning', async () => await rimraf(`${process.cwd()}/dist`));
 
 const copyIfNonExistent = (srcPath, destPath) =>
   copyFile(srcPath, destPath, COPYFILE_EXCL)
