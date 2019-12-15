@@ -139,23 +139,23 @@ export class PanelCtrl {
       });
     }
 
-    menu.push({
-      text: 'Share',
-      click: 'ctrl.sharePanel();',
-      icon: 'fa fa-fw fa-share',
-      shortcut: 'p s',
-    });
+    // menu.push({
+    //   text: 'Share',
+    //   click: 'ctrl.sharePanel();',
+    //   icon: 'fa fa-fw fa-share',
+    //   shortcut: 'p s',
+    // });
 
     // Additional items from sub-class
     menu.push(...(await this.getAdditionalMenuItems()));
 
-    const extendedMenu = this.getExtendedMenu();
-    menu.push({
-      text: 'More ...',
-      click: '',
-      icon: 'fa fa-fw fa-cube',
-      submenu: extendedMenu,
-    });
+    // const extendedMenu = this.getExtendedMenu();
+    // menu.push({
+    //   text: 'More ...',
+    //   click: '',
+    //   icon: 'fa fa-fw fa-cube',
+    //   submenu: extendedMenu,
+    // });
 
     if (this.dashboard.meta.canEdit) {
       menu.push({ divider: true, role: 'Editor' });
