@@ -42,6 +42,7 @@
   @extend .view-mode--inactive;
 
   .sidemenu {
+    display: none;
     position: fixed;
     background-color: transparent;
     box-shadow: none;
@@ -64,7 +65,7 @@
   }
 
   .submenu-controls {
-    display: none;
+    display: block;
   }
 }
 
@@ -81,6 +82,6 @@
   }
 
   .submenu-controls {
-    display: none;
+    display: block;
   }
 }
