@@ -170,7 +170,7 @@ export class DashNav extends PureComponent<Props> {
 
   render() {
     const { dashboard, onAddPanel, location, $injector } = this.props;
-    const { canStar, canSave, canShare, showSettings, isStarred } = dashboard.meta;
+    const { canStar, canSave, showSettings, isStarred } = dashboard.meta;
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
     return (
@@ -220,14 +220,14 @@ export class DashNav extends PureComponent<Props> {
             />
           )}
 
-          {canShare && (
+          {/* {canShare && (
             <DashNavButton
               tooltip="Share dashboard"
               classSuffix="share"
               icon="fa fa-share-square-o"
               onClick={this.onOpenShare}
             />
-          )}
+          )} */}
 
           {canSave && (
             <DashNavButton tooltip="Save dashboard" classSuffix="save" icon="fa fa-save" onClick={this.onSave} />
