@@ -69,6 +69,14 @@
   }
 }
 
+.view-mode--embed {
+  @extend .view-mode--tv;
+
+  .panel-title {
+    display: none;
+  }
+}
+
 .view-mode--kiosk {
   @extend .view-mode--tv;
 

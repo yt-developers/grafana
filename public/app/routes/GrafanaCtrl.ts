@@ -101,6 +101,10 @@ function setViewModeBodyClass(body: JQuery, mode: KioskUrlValue) {
       body.addClass('view-mode--tv');
       break;
     }
+    case 'embed': {
+      body.addClass('view-mode--embed');
+      break;
+    }
     // 1 & true for legacy states
     case '1':
     case true: {
