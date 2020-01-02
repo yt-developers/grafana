@@ -67,6 +67,23 @@
   .submenu-controls {
     display: block;
   }
+
+  .navbar-page-btn {
+    i {
+      display: inline-block;
+    }
+  }
+
+  .navbar-page-btn a {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .navbar-page-btn a {
+    i {
+      display: none;
+    }
+  }
 }
 
 .view-mode--embed {
