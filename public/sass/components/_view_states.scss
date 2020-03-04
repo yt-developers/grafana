@@ -86,14 +86,6 @@
   }
 }
 
-.view-mode--embed {
-  @extend .view-mode--tv;
-
-  .panel-title {
-    display: none;
-  }
-}
-
 .view-mode--kiosk {
   @extend .view-mode--tv;
 
@@ -106,6 +98,34 @@
     height: 100%;
   }
 
+  .submenu-controls {
+    display: block;
+  }
+}
+
+.view-mode--embeded {
+  @extend .view-mode--kiosk;
+
+  .panel-title {
+    display: none;
+  }
+}
+
+.view-mode--arcus {
+  // @extend .view-mode--tv;
+
+  .sidemenu,
+  .sidemenu_logo,
+  .navbar-page-btn {
+    display: none;
+  }
+
+  .scroll-canvas--dashboard {
+    height: 100%;
+  }
+
+  // .navbar-buttons--actions,
+  // .navbar-buttons,
   .submenu-controls {
     display: block;
   }

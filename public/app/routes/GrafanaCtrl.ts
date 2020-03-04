@@ -105,6 +105,10 @@ function setViewModeBodyClass(body: JQuery, mode: KioskUrlValue) {
       body.addClass('view-mode--embed');
       break;
     }
+    case 'arcus': {
+      body.addClass('view-mode--arcus');
+      break;
+    }
     // 1 & true for legacy states
     case '1':
     case true: {
