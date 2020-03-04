@@ -277,6 +277,17 @@ export class DashboardPage extends PureComponent<Props, State> {
 
     return (
       <div className={classes}>
+        <div className={'arcus-top-bar'}>
+          {dashboard.meta.submenuEnabled && <SubMenu dashboard={dashboard} />}
+          <DashNav
+            dashboard={dashboard}
+            isEditing={isEditing}
+            isFullscreen={isFullscreen}
+            editview={editview}
+            $injector={$injector}
+            onAddPanel={this.onAddPanel}
+          />
+        </div>
         <DashNav
           dashboard={dashboard}
           isEditing={isEditing}

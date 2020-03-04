@@ -112,10 +112,10 @@
 }
 
 .view-mode--arcus {
-  // @extend .view-mode--tv;
-
   .sidemenu,
   .sidemenu_logo,
+  .navbar,
+  .submenu-controls,
   .navbar-page-btn {
     display: none;
   }
@@ -124,9 +124,20 @@
     height: 100%;
   }
 
-  // .navbar-buttons--actions,
-  // .navbar-buttons,
-  .submenu-controls {
+  .arcus-top-bar {
+    display: flow-root;
+  }
+  .arcus-top-bar .submenu-controls {
     display: block;
+    float: left;
+    min-height: 55px;
+    padding: 10px 10px 0 20px;
+  }
+  .arcus-top-bar .navbar {
+    display: flex;
+  }
+  .arcus-top-bar .navbar-buttons--actions,
+  .arcus-top-bar .navbar-buttons--tv {
+    display: none;
   }
 }
