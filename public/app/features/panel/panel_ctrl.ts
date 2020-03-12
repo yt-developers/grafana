@@ -149,13 +149,15 @@ export class PanelCtrl {
     // Additional items from sub-class
     menu.push(...(await this.getAdditionalMenuItems()));
 
-    // const extendedMenu = this.getExtendedMenu();
-    // menu.push({
-    //   text: 'More ...',
-    //   click: '',
-    //   icon: 'fa fa-fw fa-cube',
-    //   submenu: extendedMenu,
-    // });
+    if (this.dashboard.meta.canEdit) {
+      const extendedMenu = this.getExtendedMenu();
+      menu.push({
+        text: 'More ...',
+        click: '',
+        icon: 'fa fa-fw fa-cube',
+        submenu: extendedMenu,
+      });
+    }
 
     if (this.dashboard.meta.canEdit) {
       menu.push({ divider: true, role: 'Editor' });
