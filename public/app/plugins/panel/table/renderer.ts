@@ -271,7 +271,7 @@ export class TableRenderer {
 
       const cellLink = this.templateSrv.replace(column.style.linkUrl, scopedVars, encodeURIComponent);
       const cellLinkTooltip = this.templateSrv.replace(column.style.linkTooltip, scopedVars);
-      const cellTarget = column.style.linkTargetBlank ? '_blank' : '';
+      const cellTarget = column.style.linkTargetParent ? '_parent' : column.style.linkTargetBlank ? '_blank' : '';
 
       cellClasses.push('table-panel-cell-link');
 

@@ -62,6 +62,7 @@ export interface ColumnStyle {
   linkUrl?: any;
   linkTooltip?: any;
   linkTargetBlank?: boolean;
+  linkTargetParent?: boolean;
 
   preserveFormat?: boolean;
 }
@@ -227,7 +228,7 @@ class CellBuilderWithStyle {
 
       const cellLink = this.replaceVariables(this.style.linkUrl, scopedVars, encodeURIComponent);
       const cellLinkTooltip = this.replaceVariables(this.style.linkTooltip, scopedVars);
-      const cellTarget = this.style.linkTargetBlank ? '_blank' : '';
+      const cellTarget = this.style.linkTargetParent ? '_parent' : this.style.linkTargetBlank ? '_blank' : '';
 
       cellClasses.push('table-panel-cell-link');
       value = (
