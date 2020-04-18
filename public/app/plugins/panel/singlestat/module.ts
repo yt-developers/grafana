@@ -111,6 +111,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       thresholdLabels: false,
     },
     tableColumn: '',
+    linkUrl: '',
   };
 
   /** @ngInject */
@@ -372,6 +373,10 @@ class SingleStatCtrl extends MetricsPanelCtrl {
       }
 
       body += getSpan('singlestat-panel-value', panel.valueFontSize, panel.colorValue, data.display.text);
+
+      if (panel.linkUrl) {
+        body = '<a target="_parent" href="' + templateSrv.replace(panel.linkUrl) + '">' + body + '</a>';
+      }
 
       if (panel.postfix) {
         body += getSpan('singlestat-panel-postfix', panel.postfixFontSize, panel.colorPostfix, panel.postfix);
