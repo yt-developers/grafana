@@ -210,6 +210,8 @@ class GraphCtrl extends MetricsPanelCtrl {
   }
 
   onDataFramesReceived(data: DataFrame[]) {
+    console.log('graph.onDataFromeReceived:');
+    console.log(data);
     this.dataList = data;
     this.seriesList = this.processor.getSeriesList({
       dataList: this.dataList,
@@ -232,7 +234,8 @@ class GraphCtrl extends MetricsPanelCtrl {
       for (const series of this.seriesList) {
         if (series.isOutsideRange) {
           this.dataWarning = {
-            title: 'Data outside time range',
+            // title: 'Data outside time range',
+            title: '',
             tip: 'Can be caused by timezone mismatch or missing time filter in query',
           };
           break;
@@ -270,6 +273,7 @@ class GraphCtrl extends MetricsPanelCtrl {
 
   onColorChange = (series: any, color: string) => {
     series.setColor(getColorFromHexRgbOrName(color, config.theme.type));
+    console.log('color');
     this.panel.aliasColors[series.alias] = color;
     this.render();
   };
