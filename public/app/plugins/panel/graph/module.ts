@@ -210,8 +210,6 @@ class GraphCtrl extends MetricsPanelCtrl {
   }
 
   onDataFramesReceived(data: DataFrame[]) {
-    console.log('graph.onDataFromeReceived:');
-    console.log(data);
     this.dataList = data;
     this.seriesList = this.processor.getSeriesList({
       dataList: this.dataList,
@@ -273,7 +271,6 @@ class GraphCtrl extends MetricsPanelCtrl {
 
   onColorChange = (series: any, color: string) => {
     series.setColor(getColorFromHexRgbOrName(color, config.theme.type));
-    console.log('color');
     this.panel.aliasColors[series.alias] = color;
     this.render();
   };
